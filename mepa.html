@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>MEPA VM</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h3>Constant Area</h3>
+            <p>i: 0</p>
+            <p>s: 0</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <h3>P Stack (program stack)</h3>
+            <table id="p-stack" class="table table-bordered table-condensed">
+                <thead>
+                <td>P</td>
+                </thead>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <h3>D Stack (base stack)</h3>
+            <table id="d-stack" class="table table-bordered table-condensed">
+                <thead>
+                <td>D</td>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-md-4">
+            <h3>M Stack (data stack)</h3>
+            <table id="m-stack" class="table table-bordered table-condensed">
+                <thead>
+                <td>M</td>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <h3>Code Output</h3>
+        <div id="output">
+
+        </div>
+    </div>
+    <div class="row">
+        <h3>Code Input</h3>
+        <div class="col-md-12">
+            <div class="form-group">
+                <button onclick="load()" class="btn btn-primary">Load</button>
+                <button onclick="run()" class="btn btn-success">Run</button>
+                <button onclick="next()" class="btn btn-success">Next</button>
+            </div>
+            <div class="form-group">
+                <textarea oninput="storeCode()" id="code-input" class="form-control" rows="10"></textarea>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+<!-- Latest compiled and minified JavaScript -->
+<!-- <script src="http://code.jquery.com/jquery-3.3.1.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<script src="mepa.js"></script>
+</body>
+
+</html>
