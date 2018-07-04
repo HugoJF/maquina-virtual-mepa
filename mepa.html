@@ -29,8 +29,8 @@
     <div class="row">
         <div class="col-md-12">
             <h3>Constant Area</h3>
-            <p>i: 0</p>
-            <p>s: 0</p>
+            <code><p id="constant-i">i: 0</p></code>
+                <p id="constant-s">s: 0</p>
         </div>
     </div>
     <div class="row">
@@ -40,6 +40,7 @@
                 <thead>
                 <td>P</td>
                 </thead>
+                <tbody id="p-stack-body">
                 </tbody>
             </table>
         </div>
@@ -49,7 +50,7 @@
                 <thead>
                 <td>D</td>
                 </thead>
-                <tbody>
+                <tbody id="d-stack-body">
                 </tbody>
             </table>
         </div>
@@ -59,7 +60,7 @@
                 <thead>
                 <td>M</td>
                 </thead>
-                <tbody>
+                <tbody id="m-stack-body">
 
                 </tbody>
             </table>
@@ -67,17 +68,16 @@
     </div>
     <div class="row">
         <h3>Code Output</h3>
-        <div id="output">
-
-        </div>
+        <pre id="output">
+        </pre>
     </div>
     <div class="row">
         <h3>Code Input</h3>
         <div class="col-md-12">
             <div class="form-group">
-                <button onclick="load()" class="btn btn-primary">Load</button>
-                <button onclick="run()" class="btn btn-success">Run</button>
-                <button onclick="next()" class="btn btn-success">Next</button>
+                <button onclick="load()" class="btn btn-lg btn-primary">Load</button>
+                <button onclick="run()" class="btn btn-lg btn-success">Run</button>
+                <button onclick="next()" class="btn btn-lg btn-success">Next</button>
             </div>
             <div class="form-group">
                 <textarea oninput="storeCode()" id="code-input" class="form-control" rows="10"></textarea>

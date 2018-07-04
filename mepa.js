@@ -6,6 +6,7 @@ var dStack = [];
 var mStack = [];
 
 var labels = {};
+var loaded = false;
 
 var instructionDefinitions = [];
 
@@ -105,27 +106,31 @@ instructionDefinitions.push(new InstructionDefinition('CRVL', 2, function (p1, p
 instructionDefinitions.push(new InstructionDefinition('ARMZ', 2, function (p1, p2, p3) {
     mStack[dStack[p1] + p2] = mStack[s]
     s = s - 1;
-    mStack.pop()
+    mStack.pop();
 }));
 
 instructionDefinitions.push(new InstructionDefinition('SOMA', 0, function (p1, p2, p3) {
     mStack[s - 1] = mStack[s - 1] + mStack[s];
     s = s - 1;
+    mStack.pop();
 }));
 
 instructionDefinitions.push(new InstructionDefinition('SUBT', 0, function (p1, p2, p3) {
     mStack[s - 1] = mStack[s - 1] - mStack[s];
     s = s - 1;
+    mStack.pop();
 }));
 
 instructionDefinitions.push(new InstructionDefinition('MULTI', 0, function (p1, p2, p3) {
     mStack[s - 1] = mStack[s - 1] * mStack[s];
     s = s - 1;
+    mStack.pop();
 }));
 
 instructionDefinitions.push(new InstructionDefinition('DIVI', 0, function (p1, p2, p3) {
     mStack[s - 1] = Math.floor(mStack[s - 1] / mStack[s]);
     s = s - 1;
+    mStack.pop();
 }));
 
 instructionDefinitions.push(new InstructionDefinition('INVR', 0, function (p1, p2, p3) {
@@ -263,6 +268,9 @@ instructionDefinitions.push(new InstructionDefinition('NADA', 0, function (p1, p
 
 }));
 instructionDefinitions.push(new InstructionDefinition('AMEM', 1, function (p1, p2, p3) {
+    for (var i = s + 1; i < s + p1 + 1; i++) {
+        mStack[i] = 0;
+    }
     s = s + p1;
 }));
 instructionDefinitions.push(new InstructionDefinition('DMEM', 1, function (p1, p2, p3) {
@@ -300,6 +308,9 @@ instructionDefinitions.push(new InstructionDefinition('CRVI', 2, function (p1, p
     mStack[s] = mStack[mStack[dStack[p1] + p2]];
 }));
 instructionDefinitions.push(new InstructionDefinition('ARMI', 2, function (p1, p2, p3) {
+    console.log('dStack[p1]: ', dStack[p1]);
+    console.log('mStack[dStack[p1] + p2]: ', mStack[dStack[p1] + p2]);
+
     mStack[mStack[dStack[p1] + p2]] = mStack[s];
     s = s - 1;
     mStack.pop()
@@ -319,22 +330,23 @@ instructionDefinitions.push(new InstructionDefinition('PARA', 0, function (p1, p
 }));
 
 function load() {
-    var re = /(?:([A-Za-z0-9]+):[ ])?(-?[A-Za-z]+)[ ]?(-?[a-zA-Z0-9]+)?[ ]?,?[ ]?(-?[0-9]+)?/gm;
+    loaded = true;
+    let re = /(?:([A-Za-z0-9]+):[ ])?(-?[A-Za-z]+)[ ]?(-?[a-zA-Z0-9]+)?[ ]?,?[ ]?(-?[0-9]+)?/gm;
 
     // Match whole lines without capturing groups
-    var instructions = $('#code-input').val().match(re);
+    let instructions = $('#code-input').val().match(re);
 
     pStack = [];
 
-    for (var z = 0; z < instructions.length; z++) {
+    for (let z = 0; z < instructions.length; z++) {
         re.lastIndex = 0;
         // Match using each capturing group
-        var inst = re.exec(instructions[z].toUpperCase());
+        let inst = re.exec(instructions[z].toUpperCase());
 
-        var name = inst[2];
-        var p1 = $.isNumeric(inst[3]) ? parseInt(inst[3]) : inst[3];
-        var p2 = parseInt(inst[4]);
-        var p3 = parseInt(inst[5]);
+        let name = inst[2];
+        let p1 = $.isNumeric(inst[3]) ? parseInt(inst[3]) : inst[3];
+        let p2 = parseInt(inst[4]);
+        let p3 = parseInt(inst[5]);
         pStack.push(new Instruction(name, p1, p2, p3));
 
         if (inst[1]) {
@@ -348,21 +360,58 @@ function load() {
     console.log(pStack);
 }
 
+var cycles = 0;
+
+function noNaN(a) {
+    if (isNaN(a)) {
+        return '';
+    } else {
+        return a;
+    }
+}
+
 function next() {
+    if (!loaded) {
+        load();
+    }
     if (!pStack[i]) {
         return false;
     }
-    console.log('Running:', pStack[i]);
+    console.log('%cRunning: ' + pStack[i]['name'] + ' '
+        + noNaN(pStack[i]['p1']) + ' '
+        + noNaN(pStack[i]['p2']) + ' '
+        + noNaN(pStack[i]['p3']),
+        'font-size:20px',);
     pStack[i].execute();
     i = i + 1;
 
+    console.log('Memory Stack setup: ', mStack);
 
-    console.log(mStack);
+    if (cycles++ > 1000) {
+        let ans = confirm('We have detected a large amount of cycles being run, this might be caused by a infinite loop, do you wish to continue?');
+
+        if (ans) cycles = 0;
+
+        return ans;
+    }
 
     return true;
 }
 
-function run() {
+function render() {
+    $('#constant-i').html(`i: ${i}`);
+    $('#constant-s').html(`s: ${s}`);
+}
+
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function run() {
+    $('#output').append(`<p><strong>AUTO EXECUTION STARTED</strong></p>`)
     while (next()) {
+        render();
+        await sleep(5);
     }
+    $('#output').append(`<p><strong>AUTO EXECUTION STOPPED</strong></p>`)
 }
